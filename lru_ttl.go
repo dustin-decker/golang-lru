@@ -26,8 +26,8 @@ type CacheWithTTL struct {
 
 // cacheValue is a wrapper around the cache value to hold last accessed time
 type cacheValue struct {
-	value          interface{}
-	lastAccessTime time.Time
+	value     interface{}
+	addedTime time.Time
 }
 
 // NewTTL constructs an LRU of the given size with the given TTL
@@ -67,8 +67,8 @@ func (c *CacheWithTTL) Add(key, value interface{}) bool {
 	defer c.lock.Unlock()
 	return c.LRU.Add(key,
 		cacheValue{
-			value:          value,
-			lastAccessTime: time.Now(),
+			value:     value,
+			addedTime: time.Now(),
 		})
 }
 
@@ -82,7 +82,7 @@ func (c *CacheWithTTL) Get(key interface{}) (value interface{}, ok bool) {
 	// while the cleanup routine is catching will the other items, remove the item
 	// if someone tries to access it through this GET call.
 	if ok {
-		if time.Now().After(val.(cacheValue).lastAccessTime.Add(c.TTL)) {
+		if time.Now().After(val.(cacheValue).addedTime.Add(c.TTL)) {
 			c.LRU.Remove(key)
 		} else {
 			return val.(cacheValue).value, ok
@@ -151,7 +151,7 @@ func (c *CacheWithTTL) Len() int {
 
 // cleanup deletes all the expired items
 func (c *CacheWithTTL) cleanup() {
-	ticker := time.NewTicker(2 * time.Millisecond)
+	ticker := time.NewTicker(5 * time.Second)
 
 	for {
 		select {
@@ -161,7 +161,7 @@ func (c *CacheWithTTL) cleanup() {
 				val, ok := c.LRU.Get(key)
 				c.lock.Unlock()
 
-				if ok && time.Now().After(val.(cacheValue).lastAccessTime.Add(c.TTL)) {
+				if ok && time.Now().After(val.(cacheValue).addedTime.Add(c.TTL)) {
 					c.Remove(key)
 				}
 			}

@@ -28,11 +28,11 @@ func TestLRUWithTTL(t *testing.T) {
 
 	// test TTL
 	evictCounter = 0
-	for i := 0; i < 128; i++ {
+	for i := 0; i < 3; i++ {
 		l.Add(i, i)
 
 		// make the items are evicted once TTL is met
-		time.Sleep(5 * time.Millisecond)
+		time.Sleep(6 * time.Second)
 
 		if l.Contains(i) {
 			t.Fatalf("item should have been evicted as TTL is met: %v", i)
@@ -46,11 +46,11 @@ func TestLRUWithTTL(t *testing.T) {
 		t.Fatalf("err: %v", err)
 	}
 
-	for i := 0; i < 20000; i++ {
+	for i := 0; i < 3; i++ {
 		l.Add(i, i)
 
 		// make the items are evicted once TTL is met
-		time.Sleep(5 * time.Millisecond)
+		time.Sleep(6 * time.Second)
 
 		if _, ok := l.Get(i); ok {
 			t.Fatalf("item should have been evicted as TTL is met: %v", i)
