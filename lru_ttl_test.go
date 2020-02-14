@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/golang-lru/testutils"
+	"github.com/dustin-decker/golang-lru/testutils"
 )
 
 func TestLRUWithTTL(t *testing.T) {

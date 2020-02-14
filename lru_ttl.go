@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/golang-lru/simplelru"
+	"github.com/dustin-decker/golang-lru/simplelru"
 )
 
 // NOTE: this implementation will ensure that the cache will become eventually consistent.

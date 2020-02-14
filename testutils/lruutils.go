@@ -3,7 +3,7 @@ package testutils
 import (
 	"testing"
 
-	"github.com/hashicorp/golang-lru/simplelru"
+	"github.com/dustin-decker/golang-lru/simplelru"
 )
 
 func BasicTest(t *testing.T, l simplelru.LRUCache, capacity int, evictCounter *int) {
